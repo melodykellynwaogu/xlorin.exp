@@ -9,14 +9,16 @@ searchBtn.addEventListener('click', async () => {
   resultsDiv.innerHTML = 'Loading...';
 
   try {
-    const res = await fetch(`https://xlorin-com.onrender.com/api/search?q=${encodeURIComponent(query)}`);
+    const res = await fetch(`https://xlorin-com.onrender.com/live_search?query=${encodeURIComponent(query)}`);
     const data = await res.json();
 
     if (data.results && data.results.length) {
       resultsDiv.innerHTML = data.results.map(item => `
         <div class="result">
-          <h3>${item.title}</h3>
+          <h3>${item.title} <small>(${item.source || 'Xlorin'})</small></h3>
           <p>${item.content}</p>
+          ${item.headings && item.headings.length ? `<p><strong>Headings:</strong> ${item.headings.join(', ')}</p>` : ''}
+          ${item.source === 'xlorin' ? `<a href="${item.source}" target="_blank">Read on Xlorin</a>` : ''}
         </div>
       `).join('');
     } else {
